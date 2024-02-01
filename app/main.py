@@ -1,15 +1,15 @@
-from typing import Annotated
 import uvicorn
 from fastapi.responses import JSONResponse
-from fastapi import Depends, FastAPI, Query, Form, HTTPException, Request, UploadFile, File
+from fastapi import Depends, FastAPI, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import date
 from app.crud import get_drivers
 from app.database import SessionLocal
 
-from app.schemas import ResponseModels
-from app import models
+from app.schemas import Records, ResponseModels
 from sqlalchemy.orm import Session
+from datetime import datetime
+
 
 
 app = FastAPI()
@@ -30,21 +30,42 @@ def get_db():
     finally:
         db.close()
 
+def serialize_date(start_date, end_date):
+    try:
+        start = datetime.strptime(str(start_date), "%Y-%m-%d").date()
+        end = datetime.strptime(str(end_date), "%Y-%m-%d").date()
+        if end < start: 
+            raise HTTPException(status_code=422, detail="Invalid start date or end date.")
+    except:
+        raise HTTPException(status_code=422, detail="Invalid start date or end date.")
 
-@app.get("/process_data")
-async def process_data(
-    start_date: date = Query(..., description="Start Date (YYYY-MM-DD)"),
-    end_date: date = Query(..., description="End Date (YYYY-MM-DD)"),
+
+@app.get("/fetch_drivers")
+async def fetch_drivers(
+    startDate: date = Query(..., description="Start Date (YYYY-MM-DD)"),
+    endDate: date = Query(..., description="End Date (YYYY-MM-DD)"),
     minScore: float = Query(..., description="Minimum Score"),
     maxScore: float = Query(..., description="Maximum Score"),
     limit: int = Query(50, description="Limit"),
     offset: int = Query(200, description="Offset"),
     db: Session = Depends(get_db)
     ) -> ResponseModels:
-    drivers = get_drivers(db, start_date, end_date, minScore, maxScore, limit, skip=offset)
-    print(drivers)
-    # query_params nesnesini kullanarak gelen verileri işleyebilirsiniz
-    return {"message": "Data processed successfully"}
+    serialize_date(startDate, endDate)
+    drivers = get_drivers(db, startDate, endDate, minScore, maxScore, limit, skip=offset)
+    records = [
+        Records(
+            id=driver.id, 
+            email=driver.email, 
+            first_name=driver.first_name, 
+            last_name=driver.last_name, 
+            driving_score=driver.driving_score, 
+            age=driver.age, 
+            created_at=driver.created_at, 
+            updated_at=driver.updated_at
+        ) for driver in drivers
+    ]
+    response = ResponseModels(code=200, msg="Success", limit=limit, offset=offset, records=records)
+    return response
 
 
 

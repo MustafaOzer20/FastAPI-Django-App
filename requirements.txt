@@ -1,5 +1,7 @@
+django
 fastapi==0.97.0
 sqlalchemy==1.4.49
 uvicorn==0.22.0
 pydantic==1.10.12
 python-dotenv==1.0.0
+requests
