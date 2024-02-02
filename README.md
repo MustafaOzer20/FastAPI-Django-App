@@ -30,7 +30,7 @@ screenshots klasörüne bakabilirsiniz.
 
 ## [EN]
 
-###FastAPI
+### FastAPI
 - Lists drivers and can filter them.
 - Contains ORM structure with SQLAlchemy.
 - It requires URL_DATABASE information and TABLE_NAME information in ".env" for database connection.
