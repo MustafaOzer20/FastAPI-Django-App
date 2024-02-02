@@ -20,7 +20,9 @@
 
 ### Nasıl Çalışır?
 1. ```pip install -r requirements.txt```
-2. FastAPI "." dizininde ```uvicorn app.main:app --reload --port 8001``` komutu ile çalıştırılabilir.
+2. Database ve tablo bilgilerini '.env' dosyasına yazın.
+3. FastAPI "." dizininde ```uvicorn app.main:app --reload --port 8001``` komutu ile çalıştırılabilir.
+4. FastAPI URL bilgisini '.env' dosyasına yazın.
 3. Django "." dizininde ```python .\django_gui\manage.py runserver``` komutu ile çalıştırılabilir.
 
 ### Django HMTL Görüntüsü için
@@ -45,8 +47,10 @@ screenshots klasörüne bakabilirsiniz.
 
 ### How does it work?
 1. ```pip install -r requirements.txt```
-2. For FastAPI; It can be run in this directory(".") with the command ```uvicorn app.main:app --reload --port 8001```.
-3. For Django; It can be run in this directory(".") with the command ```python .\django_gui\manage.py runserver```.
+2. Write the database and table information to the '.env' file.
+3. For FastAPI; It can be run in this directory(".") with the command ```uvicorn app.main:app --reload --port 8001```.
+4. Write the FastAPI URL information to the '.env' file.
+5. For Django; It can be run in this directory(".") with the command ```python .\django_gui\manage.py runserver```.
 
 ### For Django HMTL Image
 You can look in the screenshots folder.
