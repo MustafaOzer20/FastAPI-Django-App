@@ -30,12 +30,16 @@ def get_db():
     finally:
         db.close()
 
-def serialize_date(start_date, end_date):
+def serialize_date(start_date, end_date, limit, offset):
     try:
         start = datetime.strptime(str(start_date), "%Y-%m-%d").date()
         end = datetime.strptime(str(end_date), "%Y-%m-%d").date()
         if end < start: 
             raise HTTPException(status_code=422, detail="Invalid start date or end date.")
+        if limit <= 0 or limit > 150:
+            raise HTTPException(status_code=422, detail="limit must be gt 0, le 150")
+        if offset <= 0:
+            raise HTTPException(status_code=422, detail="offset must be gt 0")
     except:
         raise HTTPException(status_code=422, detail="Invalid start date or end date.")
 
@@ -50,7 +54,7 @@ async def fetch_drivers(
     offset: int = Query(200, description="Offset"),
     db: Session = Depends(get_db)
     ) -> ResponseModels:
-    serialize_date(startDate, endDate)
+    serialize_date(startDate, endDate, limit, offset)
     drivers = get_drivers(db, startDate, endDate, minScore, maxScore, limit, skip=offset)
     records = [
         Records(
