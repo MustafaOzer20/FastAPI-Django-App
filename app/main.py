@@ -38,7 +38,7 @@ def serialize_date(start_date, end_date, limit, offset):
             raise HTTPException(status_code=422, detail="Invalid start date or end date.")
         if limit <= 0 or limit > 150:
             raise HTTPException(status_code=422, detail="limit must be gt 0, le 150")
-        if offset <= 0:
+        if offset < 0:
             raise HTTPException(status_code=422, detail="offset must be gt 0")
     except:
         raise HTTPException(status_code=422, detail="Invalid start date or end date.")
