@@ -3,13 +3,16 @@ from django.http import HttpResponse
 from gui.forms import DriverFilterForm
 import requests
 import datetime
+from dotenv import dotenv_values
+
+env_vars = dotenv_values(".env")
 
 def index(request):
     return HttpResponse("<h1>Hello World!</h1>")
 
 
 def get_drivers(request):
-    fastapi_url = "http://127.0.0.1:8001/fetch_drivers"
+    fastapi_url = env_vars["FASTAPI_URL"]
 
     if request.method == "POST":
         form = DriverFilterForm(request.POST)
